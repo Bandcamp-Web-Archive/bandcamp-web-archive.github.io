@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bandcamp Web Archive</title>
+  <meta name="description" content="A personal project to archive independent Bandcamp releases to the Internet Archive as WACZ files — preserving independent music for the long term.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=IBM+Plex+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ================================================================
+     AI WARNING BANNER
+     ================================================================ -->
+<div id="ai-warning">
+  <div class="warning-inner">
+    <span class="warning-icon" aria-hidden="true">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 1L13 12.5H1L7 1z"/>
+        <path d="M7 5.5v3M7 10v.6"/>
+      </svg>
+    </span>
+    <p class="warning-text">
+      <strong>Caution</strong>
+      This project was written entirely by <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a>. I do not condone the use of AI for coding, or for much else really, but I believe archival is important enough to warrant a degree of hypocrisy on my part. I am not a coder. Please read through the code and satisfy yourself that it does what it says before running it, especially anything that touches your filesystem or makes outbound network requests. Really keep in mind that everything outside of this block (documentation, scripts) is most likely written by AI, so don't believe it's doing exactly what it says is doing, this project was tested by me, on my machine, and my machine only. If you are a real coder, find anything that could be better and want to help, feel free to send a PR and I'll do my best to understand it.
+    </p>
+    <button id="dismiss-warning" aria-label="Dismiss warning">×</button>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     NAV
+     ================================================================ -->
+<nav>
+  <a class="logo" href="#">
+    <span>//</span> Bandcamp Web Archive
+  </a>
+  <ul class="nav-links">
+    <li><a href="#why">Why</a></li>
+    <li><a href="#how">How</a></li>
+    <li><a href="#links">Links</a></li>
+    <li><a href="#thanks">Archive.org</a></li>
+  </ul>
+</nav>
+
+
+<!-- ================================================================
+     HERO
+     ================================================================ -->
+<section id="hero">
+  <div class="hero-inner">
+    <p class="hero-label">A personal archival project</p>
+    <h1 class="hero-headline">
+      Music<br>
+      shouldn't <em>disappear.</em>
+    </h1>
+    <p class="hero-sub">
+      A pipeline for capturing independent Bandcamp releases as full web archives
+      and storing them permanently on the Internet Archive — so the music,
+      the artwork, and the words around it survive whatever comes next.
+    </p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="https://bandcamp-web-archive.github.io/browse/" target="_blank" rel="noopener">
+        Browse the archive
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M2.5 6H9.5M6.5 3L9.5 6L6.5 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <a class="btn btn-ghost" href="https://github.com/Bandcamp-Web-Archive/bandcamp-wacz-archiver" target="_blank" rel="noopener">
+        View on GitHub
+      </a>
+    </div>
+  </div>
+  <div class="scroll-hint" aria-hidden="true">
+    <div class="scroll-line"></div>
+    scroll
+  </div>
+</section>
+
+
+<!-- ================================================================
+     STATS STRIP
+     ================================================================ -->
+<div class="stats-strip reveal">
+  <div class="stats-inner">
+    <div class="stat">
+      <span class="stat-value">WACZ</span>
+      <span class="stat-label">Archive format</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">128 kbps</span>
+      <span class="stat-label">Full audio captured</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">∞</span>
+      <span class="stat-label">Years of access, hopefully</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     WHY
+     ================================================================ -->
+<section id="why">
+  <div class="why-grid container reveal">
+    <div>
+      <p class="section-label">Why this exists</p>
+      <h2 class="section-title">The internet<br><em>forgets.</em></h2>
+      <blockquote class="pull-quote">
+        Independent music lives and dies by the platforms that host it.
+      </blockquote>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <p class="card-title">Platforms come and go</p>
+        <p>Bandcamp has changed hands. Before that, MySpace took entire catalogs with it. SoundCloud nearly shut down in 2017. Every platform that hosts music is a single point of failure for the artists who trusted it.</p>
+      </div>
+      <div class="card">
+        <p class="card-title">Independent artists are most at risk</p>
+        <p>Major label releases have redundant distribution and institutional backing. Independent artists — the ones who actually built Bandcamp — often have no copy anywhere else. When the page goes, the music goes.</p>
+      </div>
+      <div class="card">
+        <p class="card-title">A web archive captures everything</p>
+        <p>Not just an MP3. The artwork at full resolution, the release notes, the credits, the tags, the story behind the record — frozen exactly as it was, replayable years from now without any dependency on Bandcamp.</p>
+      </div>
+      <div class="card">
+        <p class="card-title">This is small, personal, and imperfect</p>
+        <p>This project archives one person's followed artists. It is not comprehensive. But comprehensive efforts start somewhere, and an archived record is better than none.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     HOW IT WORKS
+     ================================================================ -->
+<section id="how">
+  <div class="how-inner reveal">
+    <p class="section-label">How it works</p>
+    <h2 class="section-title">From Bandcamp<br>to <em>permanent storage.</em></h2>
+
+    <div class="pipeline">
+
+      <div class="pipeline-step">
+        <span class="step-num">01</span>
+        <div class="step-body">
+          <h3 class="step-title">Metadata is fetched and tracked</h3>
+          <p class="step-desc">For each followed artist, the pipeline scrapes release metadata — titles, tags, credits, artwork URLs, Bandcamp IDs — and stores it locally as JSON. This becomes the source of truth for everything downstream.</p>
+          <span class="step-tag">fetch_metadata.py</span>
+        </div>
+      </div>
+
+      <div class="pipeline-step">
+        <span class="step-num">02</span>
+        <div class="step-body">
+          <h3 class="step-title">Browsertrix crawls each release</h3>
+          <p class="step-desc">A custom browser behavior runs inside a Browsertrix container and reads audio stream URLs directly from the page's embedded JSON. Each MP3 is fetched as a complete file — bypassing Bandcamp's chunked streaming — so the full audio is captured in the archive.</p>
+          <span class="step-tag">crawl.py · behaviors/bandcamp.js</span>
+        </div>
+      </div>
+
+      <div class="pipeline-step">
+        <span class="step-num">03</span>
+        <div class="step-body">
+          <h3 class="step-title">A WACZ file is produced</h3>
+          <p class="step-desc">The crawl output is a WACZ — a self-contained web archive containing the full page, all artwork, and every audio stream. It can be replayed offline using ReplayWeb.page without any dependency on Bandcamp still existing.</p>
+          <span class="step-tag">WACZ · ReplayWeb.page</span>
+        </div>
+      </div>
+
+      <div class="pipeline-step">
+        <span class="step-num">04</span>
+        <div class="step-body">
+          <h3 class="step-title">Uploaded to the Internet Archive</h3>
+          <p class="step-desc">Each WACZ and its JSON sidecar are uploaded to archive.org as a permanent item. The item identifier is written back to the local metadata so the browser can link directly to it.</p>
+          <span class="step-tag">upload.py · archive.org</span>
+        </div>
+      </div>
+
+      <div class="pipeline-step">
+        <span class="step-num">05</span>
+        <div class="step-body">
+          <h3 class="step-title">New releases trigger automatically</h3>
+          <p class="step-desc">An optional IMAP daemon watches for Bandcamp new-release notification emails and triggers the pipeline immediately when one arrives — no manual intervention needed for followed artists.</p>
+          <span class="step-tag">email_watcher.py · IMAP IDLE</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     LINKS
+     ================================================================ -->
+<section id="links">
+  <div class="links-inner reveal">
+    <p class="section-label">The project</p>
+    <h2 class="section-title">Two parts<br>working <em>together.</em></h2>
+
+    <div class="link-cards">
+
+      <!-- Archiver -->
+      <a class="link-card" href="https://github.com/Bandcamp-Web-Archive/bandcamp-wacz-archiver" target="_blank" rel="noopener">
+        <div class="link-card-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 4h12v9a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"/>
+            <path d="M8 4V2M12 4V2"/>
+            <path d="M7 9h6M7 12h4"/>
+          </svg>
+        </div>
+        <p class="link-card-label">Archiver</p>
+        <h3 class="link-card-title">bandcamp-wacz-archiver</h3>
+        <p class="link-card-desc">The pipeline. Fetches metadata, orchestrates Browsertrix crawls, produces WACZ files, and uploads them to archive.org. Supports single albums, full discographies, and automatic email-triggered archiving.</p>
+        <span class="link-card-url">
+          github.com/Bandcamp-Web-Archive/bandcamp-wacz-archiver
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" aria-hidden="true"><path d="M2 10L10 2M5 2h5v5"/></svg>
+        </span>
+      </a>
+
+      <!-- Browser -->
+      <a class="link-card" href="https://bandcamp-web-archive.github.io/browse/" target="_blank" rel="noopener">
+        <div class="link-card-icon">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="3" width="16" height="14" rx="2"/>
+            <path d="M2 7h16"/>
+            <path d="M6 11h4M6 14h6"/>
+          </svg>
+        </div>
+        <p class="link-card-label">Browser</p>
+        <h3 class="link-card-title">Bandcamp Archive Browser</h3>
+        <p class="link-card-desc">A static Jekyll site that turns the archiver's JSON output into a searchable, filterable catalog — with live archive status badges, tag filtering, cover art, and direct links to every item on archive.org. Updated at least once a day.</p>
+        <span class="link-card-url">
+          bandcamp-web-archive.github.io/browse
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" aria-hidden="true"><path d="M2 10L10 2M5 2h5v5"/></svg>
+        </span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     ARCHIVE.ORG THANKS
+     ================================================================ -->
+<section id="thanks">
+  <div class="thanks-inner reveal">
+    <div class="ia-block">
+
+      <!-- Archive.org columns motif -->
+      <div class="ia-logo" aria-hidden="true">
+        <svg viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8"  y="28" width="10" height="60" fill="#d4893a"/>
+          <rect x="22" y="28" width="10" height="60" fill="#d4893a"/>
+          <rect x="36" y="28" width="10" height="60" fill="#d4893a"/>
+          <rect x="50" y="28" width="10" height="60" fill="#d4893a"/>
+          <rect x="64" y="28" width="10" height="60" fill="#d4893a"/>
+          <polygon points="4,28 76,28 40,8" fill="#8a5520"/>
+          <rect x="2" y="88" width="76" height="8" rx="1" fill="#8a5520"/>
+          <rect x="2" y="24" width="76" height="6" rx="1" fill="#8a5520"/>
+        </svg>
+      </div>
+
+      <div class="ia-text">
+        <p class="section-label">With gratitude</p>
+        <h2 class="section-title">Thank you,<br><em>Internet Archive.</em></h2>
+        <div class="prose">
+          <p>
+            None of this would exist without the <a href="https://archive.org" target="_blank" rel="noopener">Internet Archive</a>.
+            For over twenty-five years they have quietly done the work of preserving the web — not because it was
+            profitable, but because they believed that access to knowledge and culture should be permanent and free.
+          </p>
+          <p>
+            The Wayback Machine alone has archived hundreds of billions of pages. Their open S3-compatible API makes
+            it possible for anyone with a script and an internet connection to contribute to that effort. This project
+            is only possible because they provide that infrastructure to individuals at no cost.
+          </p>
+          <p>
+            If you use the Internet Archive — for research, for nostalgia, for preservation, for anything — please
+            consider supporting them. They are a library, they behave like one, and they deserve the same support.
+          </p>
+        </div>
+        <a class="ia-link" href="https://archive.org/donate" target="_blank" rel="noopener">
+          Donate to the Internet Archive
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" aria-hidden="true">
+            <path d="M2 10L10 2M5 2h5v5"/>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     FOOTER
+     ================================================================ -->
+<footer>
+  <div class="footer-inner">
+    <p class="footer-left">
+      <strong>Bandcamp Web Archive</strong> — a personal preservation project.
+      Not affiliated with Bandcamp or the Internet Archive.
+    </p>
+    <nav class="footer-right" aria-label="Footer links">
+      <a href="https://github.com/Bandcamp-Web-Archive/bandcamp-wacz-archiver" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://bandcamp-web-archive.github.io/browse/" target="_blank" rel="noopener">Browse</a>
+      <a href="https://archive.org" target="_blank" rel="noopener">Archive.org</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
